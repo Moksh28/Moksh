@@ -1,0 +1,147 @@
+<section id="booking-screen">
+  <div class="container" style="margin-top: 1%;">
+    <div class="row">
+      <div class="text-end">
+        <button type="button" class="btn btn-light top-bar" routerLink="/dashboard">Back to Dashboard</button>
+        <button type="button" class="btn btn-light top-bar" routerLink="/user/manage-booking">Manage Booking</button>
+        <button type="button" class="btn btn-outline-primary top-bar" routerLink="/admin/login">Admin Login</button>
+      </div>
+
+      <div class="text-center">
+        <h3 class="holder">Booking Screen</h3>
+      </div>
+    </div>
+
+    <div>
+      <div class="row details">
+        <div class="col-5 holder">
+          <img src="{{selectedCamp.image}}" alt="Camp_Pic">
+          <div class="row upper-space">
+            <div class="col-3"><strong>Description:</strong></div>
+            <div class="col-9" style="text-align: justify;">
+              {{selectedCamp.description}}
+            </div>
+          </div>
+          <div class="row upper-space">
+            <div class="col-3"><strong>Cost:</strong></div>
+            <div class="col-9">
+              <strong>INR {{selectedCamp.rate}}</strong> per night
+            </div>
+          </div>
+          <div class="row upper-space">
+            <div class="col-3"><strong>Max: </strong></div>
+            <div class="col-9">{{selectedCamp.capacity}} Persons</div>
+          </div>
+        </div>
+        <div class="col-6 holder">
+          <div class="holder text-center">
+            <small>Please fill the below details to complete the booking!</small>
+          </div>
+          <div>
+            <form [formGroup]="bookingForm" (ngSubmit)="bookCamp()">
+              <div class="billing-form">
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">Check In</label>
+                  </div>
+                  <div class="col-8">
+                    <div class="form-group">
+                      <input type="date" name="checkInDate" id="check-in-date" [min]="getToday()" [value]="getToday()" class="form-control date-picker" formControlName="checkIn" placeholder="Check In Date" (change)="handler()">
+                      <span class="error" *ngIf="!bookingForm.controls['checkIn'].valid && bookingForm.controls['checkIn']?.touched">Check In is Required.</span>
+                    </div>
+                  </div>
+                </div><br>
+
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">Check Out</label>
+                  </div>
+                  <div class="col-8">
+                    <div class="form-group">
+                      <input type="date" name="checkOutDate" id="check-out-date" class="form-control date-picker" formControlName="checkOut" placeholder="Check Out Date" [min]="getToday()" [value]="getTomorrow()" (change)="handler()">
+                      <span class="error" *ngIf="!bookingForm.controls['checkOut'].valid && bookingForm.controls['checkOut']?.touched">Check Out is Required.</span>
+                    </div>
+                  </div>
+                </div><br>
+
+                <div *ngIf="!wrongDate">
+                  <div *ngIf="!clashOfDates">
+                    <div class="holder text-center">
+                      <p>Total Stay: {{totalDays}} Nights</p>
+                      <p>Total Amount: {{totalDays}} * {{selectedCamp.rate}} = INR {{totalCost}}</p>
+                    </div>
+                  </div>
+                  <div *ngIf="clashOfDates">
+                    <span class="error text-center">Booking is not available for available dates.</span><br>
+                  </div>
+                </div>
+                <div *ngIf="wrongDate" class="text-center">
+                  <span class="error">Check In Date must not be greater than Check Out Date. Please Correct it.</span><br><pre></pre>
+                </div>
+
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">Billing Address</label>
+                  </div>
+                  <div class="col-8">
+                    <div class="form-group">
+                      <input type="text" name="billingAddress" id="billing-address" class="form-control" formControlName="address" placeholder="Enter Address">
+                      <span class="error" *ngIf="!bookingForm.controls['address'].valid && bookingForm.controls['address']?.touched">Billing Address is Required.</span>
+                    </div><br>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">State</label>
+                  </div>
+                  <div class="col 8">
+                    <div class="form-group">
+                      <input type="text" name="state" id="state" class="form-control" formControlName="state" placeholder="Enter State">
+                      <span class="error" *ngIf="!bookingForm.controls['state'].valid && bookingForm.controls['state']?.touched">State is Required.</span>
+                    </div><br>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">Country</label>
+                  </div>
+                  <div class="col-8">
+                    <div class="form-group">
+                      <input type="text" name="country" id="country" class="form-control" formControlName="country" placeholder="Enter Country">
+                      <span class="error" *ngIf="!bookingForm.controls['country'].valid && bookingForm.controls['country']?.touched">Country is Required.</span>
+                    </div><br>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">Zip Code</label>
+                  </div>
+                  <div class="col-8">
+                    <div class="form-group">
+                      <input type="text" name="zipCode" id="zip-code" class="form-control" formControlName="zip" placeholder="Enter Zip Code" minlength="6" maxlength="6">
+                      <span class="error" *ngIf="!bookingForm.controls['zip'].valid && bookingForm.controls['zip']?.touched">Zip Code is Required.</span>
+                    </div><br>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-end">
+                    <label for="">Cell Phone</label>
+                  </div>
+                  <div class="col-8">
+                    <div class="form-group">
+                      <input type="text" name="cellPhone" id="cell-phone" class="form-control" formControlName="phone" placeholder="Enter Cell Phone" minlength="10">
+                      <span class="error" *ngIf="!bookingForm.controls['phone'].valid && bookingForm.controls['phone']?.touched">Cell Phone is Required</span>
+                    </div><br>
+                  </div>
+                </div>
+                <div *ngIf="!clashOfDates && !wrongDate">
+                  <button type="submit" [disabled]="!bookingForm.valid" class="btn btn-primary btn-lg button-center">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

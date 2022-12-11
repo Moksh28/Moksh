@@ -1,0 +1,66 @@
+<section id="manage-booking">
+    <div class="container" style="margin-top: 1%;">
+      <div class="text-end">
+        <button type="button" class="btn btn-light top-bar" routerLink="/dashboard">Back to Dashboard</button>
+        <button type="button" class="btn btn-outline-primary top-bar" routerLink="/admin/login">Admin Login</button>
+      </div>
+    </div>
+    <div class="container align-items-center justify-content-center col-md-6">
+      <div class="search-box">
+        <h3 class="text-center upper-space">Manage Your Booking Here</h3>
+        <form [formGroup]="manageBookingForm" (ngSubmit)="manageBooking()">
+          <div class="form-group upper-space">
+            <label>Reference ID</label>
+            <input type="text" class="form-control" formControlName="referenceId" placeholder="Enter Reference ID" minlength="8" maxlength="8">
+            <span class="error" *ngIf="!manageBookingForm.controls['referenceId'].valid && manageBookingForm.controls['referenceId']?.touched">Reference ID is required and length must be 8.</span>
+          </div><br>
+          <button type="submit" [disabled]="!manageBookingForm.valid" class="btn btn-primary btn-lg">Submit</button>
+        </form>
+      </div>
+      <div class="manage-booking-options upper-space" *ngIf="foundCamp != null">
+        <h4 class="text-center"><u>Booking Details</u></h4>
+        <div class="booking-details">
+          <!-- <div class="row">
+            <div class="col-5">Camp</div>
+            <div class="col-7">Nagarro Camp</div>
+          </div><br> -->
+          <div class="row">
+            <div class="col-5">No. of Days</div>
+            <div class="col-7">{{foundCamp.days}}</div>
+          </div><br>
+          <div class="row">
+            <div class="col-5">Date of Booking</div>
+            <div class="col-7">{{foundCamp.checkIn}} to {{foundCamp.checkOut}}</div>
+          </div><br>
+          <div class="row">
+            <div class="col-5">Total Bill</div>
+            <div class="col-7"><strong>INR {{foundCamp.cost}}</strong></div>
+          </div><br>
+          <div *ngIf="campFinished">
+            <div class="row" *ngIf="!campRated">
+              <div class="col-5">Rating</div>
+              <div class="col-7">
+                <form [formGroup]="ratingForm" (ngSubmit)="rateCamp()">
+                  <div class="row">
+                    <div class="col-6">
+                      <select style="width: 80%;" formControlName="rating">
+                        <option value=1>1 Star</option>
+                        <option value=2>2 Star</option>
+                        <option value=3>3 Star</option>
+                        <option value=4>4 Star</option>
+                        <option value=5 selected>5 Star</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <button type="submit" class="btn btn-light">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div><br>
+        </div>
+        <button class="btn btn-outline-danger btn-lg button-center" (click)="cancelCamp()" *ngIf="!campFinished">Cancel Camp Booking</button>
+      </div>
+    </div>
+  </section>

@@ -1,0 +1,10 @@
+<section id="header">
+    <nav class="navbar navbar-light bg-light">
+      <div class="container">
+        <a routerLink="/dashboard" class="navbar-brand">
+          <strong>Village Forge Camp Booking</strong>
+        </a>
+        <button *ngIf="adminService.loggedInUser != null" (click)="logOut()" class="btn btn-danger">Log Out</button>
+      </div>
+    </nav>
+  </section>

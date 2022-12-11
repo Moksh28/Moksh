@@ -1,0 +1,106 @@
+<section id="dashboard">
+  <div class="container">
+    <div class="text-end top-margin" *ngIf="adminService.loggedInUser == null">
+      <button type="button" class="btn btn-light top-bar" routerLink="/user/manage-booking">Manage Booking</button>
+      <button type="button" class="btn btn-outline-primary top-bar" routerLink="/admin/login">Admin Login</button>
+    </div>
+
+    <div class="text-end top-margin" *ngIf="adminService.loggedInUser != null">
+      <button type="button" class="btn btn-light top-bar" routerLink="/admin/manage-camps">Manage Camps</button>
+      <button type="button" class="btn btn-outline-primary top-bar" routerLink="/admin/add-new-camp">Add New Camp</button>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 div-search">
+        <div class="text-center">
+          <label><b>SEARCH</b></label><pre></pre>
+          <form [formGroup]="filterForm" (ngSubmit)="getFilteredCamps()">
+            <div class="row">
+              <div class="col-5 text-end">
+                <label>Check In:</label>
+              </div>
+              <div class="col-7">
+                <input type="date" class="form-control date-picker" formControlName="startDate" [min]="getToday()" (change)="handler()">
+              </div>
+            </div><br>
+
+            <div class="row">
+              <div class="col-5 text-end">
+                <label>Check Out:</label>
+              </div>
+              <div class="col-7">
+                <input type="date" class="form-control date-picker" formControlName="endDate" [min]="getTomorrow()" (change)="handler()">
+              </div>
+            </div><br>
+            
+            <div class="row">
+              <div class="col-5 text-end">
+                <label>Capacity:</label>
+              </div>
+              <div class="col-7">
+                <select class="form-control" formControlName="capacity">
+                  <option selected>--Any--</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="4">4</option>
+                  <option value="8">8</option>
+                  <option value="16">16</option>
+                </select>
+              </div>
+            </div><br>
+
+            <div class="row">
+              <div class="col-6" *ngIf="!wrongDate">
+                <div class="text-center div-search">
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+              </div>
+              <div *ngIf="wrongDate">
+                <span class="error"><small>Check In Date must not be greater than Check Out Date! Please Correct It!</small></span>
+              </div>
+              <div class="col-6">
+                <div class="text-center div-search">
+                  <button type="button" class="btn btn-danger" (click)="clearFilter()">Clear</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-9">
+        <div *ngIf="camps">
+          <div class="div-camps" *ngFor="let camp of camps | paginate : {
+            itemsPerPage: tableSize,
+            currentPage: page,
+            totalItems: count
+          }; let i = index">
+            <div class="row camp-div-one">
+              <div class="col-3 text-center">
+                <img style="padding-left: 5px;" src="{{camp.image}}" alt="Camp_Pic">
+              </div>
+              <div class="col-2 text-center mt-auto">
+                <p *ngIf="camp.ratingSum">Ratings: {{camp.ratingSum / camp.ratingCount | number}}</p>
+                <p><small style="color: #666;">Max: {{camp.capacity}} Person</small></p>
+              </div>
+              <div class="col-4 text-center">
+                <p style="color: #1466e3;">{{camp.title}}</p>
+                <p class="description-area">{{camp.description}}</p>
+              </div>
+              <div class="col-3">
+                <div class="text-center mt-1">
+                  <strong>INR {{camp.rate}} </strong>per night
+                </div><br>
+                <button type="button" (click)="getCamp(camp)" class="btn btn-success button-center">Book</button>
+              </div>
+            </div>
+          </div>
+        </div><pre></pre>
+        <div class="d-flex justify-content-center">
+          <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)"></pagination-controls>
+        </div>
+      </div>
+      <div class="text-center" *ngIf="!camps?.length">No Matching Camp Found!</div>
+    </div>
+  </div>
+</section>
